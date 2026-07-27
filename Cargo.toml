@@ -23,59 +23,43 @@ thiserror = "1.0"
 bio = "1"
 rand = "0.8.3"
 fxhash = "0"
+partitions = { git = "https://github.com/bluenote-1577/partitions.git" }
+#partitions = "0.2"
 num-traits = "0"
-needletail = { version = "0.5", default-features = false }
-#simple-logging = "2"
+needletail = "0.5"
+simple-logging= "2"
 log = "0.4"
-rayon = "1.12"
+rayon = "1.5"
 smallvec = { version = "1", features = ["union","serde","write"] }
 serde = "1"
 bincode = "1"
 intervallum = "1"
 rust-lapper = "1"
 gcollections = "1"
-fastrand = "1"
+fastrand="1"
 gbdt = "0"
 serde_json = "1"
 statrs = "0"
-wasm-bindgen = "=0.2.99"
-partitions = { git = "https://github.com/nadiaaiskandar/partitions.git" }
 memmap2 = "0.9"
-
-
 
 [dependencies.clap]
 version = "3"
 features = ["derive"]
 optional = true
 
-[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-simple-logging = "2"
-
-[target.'cfg(target_arch = "wasm32")'.dependencies]
-getrandom = { version = "0.2", features = ["js"] }
-union-find = "0.4.4"
-instant = { version = "0.1", features = ["wasm-bindgen"] }
-console_error_panic_hook = "0.1"
-web-sys = { version = "0.3", features = ["console"] }
-wasm-bindgen-rayon = "1.3"
-
 [target.'cfg(target_env = "musl")'.dependencies]
 tikv-jemallocator = "0.5.4"
 
-#[dev-dependencies]
-#assert_cmd = "1.0.1"
-#predicates = "1"
-#serial_test = "0"
-#tsv = "0.1.1"
-#reflection = "0" 
+[dev-dependencies]
+assert_cmd = "1.0.1"
+predicates = "1"
+serial_test = "0"
+tsv = "0.1.1"
+reflection = "0"
 
 [features]
 default = ["cli"]
 cli = ["clap"]
-
-[lib]
-crate-type = ["cdylib", "rlib"]
 
 [[bin]]
 name = "skani"
@@ -93,4 +77,3 @@ opt-level = 3
 
 #[rust]
 #debuginfo-level = 1
-
