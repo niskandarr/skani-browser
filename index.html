@@ -653,8 +653,8 @@
 
   <script type="module">
 
-    import init, { compare_genomes, compare_triangle, initThreadPool } from '/pkg/skani.js';
-  //  import init, { compare_genomes, compare_triangle } from '/pkg/skani.js';
+    import init, { compare_genomes, compare_triangle, initThreadPool } from './pkg/skani.js';
+  //  import init, { compare_genomes, compare_triangle } from './pkg/skani.js';
 
     // ---- state ----
     let fileA = null, fileB = null;
@@ -799,7 +799,7 @@
     }
     
     // ---- init WASM ----
-    init({ module_or_path: '/pkg/skani_bg.wasm' }).then(async () => {
+    init({ module_or_path: './pkg/skani_bg.wasm' }).then(async () => {
       // initialise rayon thread pool using all available CPU threads
       await initThreadPool(navigator.hardwareConcurrency); //HERE
 
