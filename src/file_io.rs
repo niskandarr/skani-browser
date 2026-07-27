@@ -7,6 +7,7 @@ use log::*;
 use needletail::parse_fastx_file;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
+#[cfg(not(target_arch = "wasm32"))]
 use rayon::prelude::*;
 use std::fs::File;
 use std::io::{self, BufReader, BufWriter, Write};
@@ -145,7 +146,9 @@ pub fn fastx_to_sketches(
 ) -> Vec<Sketch> {
     let ref_sketches: Mutex<Vec<_>> = Mutex::new(vec![]);
     let mut index_vec = (0..ref_files.len()).collect::<Vec<usize>>();
+    #[cfg(not(target_arch = "wasm32"))]
     index_vec.shuffle(&mut thread_rng());
+    #[cfg(not(target_arch = "wasm32"))]
     index_vec.into_par_iter().for_each(|i| {
         let ref_file = &ref_files[i];
         let mut new_sketch = Sketch::new(
@@ -257,7 +260,9 @@ pub fn fastx_to_multiple_sketch_rewrite(
 ) -> Vec<Sketch> {
     let ref_sketches: Mutex<Vec<_>> = Mutex::new(vec![]);
     let mut index_vec = (0..ref_files.len()).collect::<Vec<usize>>();
+    #[cfg(not(target_arch = "wasm32"))]
     index_vec.shuffle(&mut thread_rng());
+    #[cfg(not(target_arch = "wasm32"))]
     index_vec.into_par_iter().for_each(|i| {
         let mut small_contig_warn = false;
         let ref_file = &ref_files[i];
@@ -683,7 +688,7 @@ pub fn sketches_from_sketch(ref_files: &Vec<String>) -> (SketchParams, Vec<Sketc
 
     (0..ref_files.len())
         .collect::<Vec<usize>>()
-        .into_par_iter()
+        .into_iter() // changed to not parallel
         .for_each(|i| {
             let sketch_file = &ref_files[i];
             if !sketch_file.contains("markers.bin") {

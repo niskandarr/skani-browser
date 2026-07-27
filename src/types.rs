@@ -33,7 +33,9 @@ use serde::{Deserialize, Serialize};
 use smallvec::SmallVec;
 use smallvec::smallvec;
 use crate::params::*;
+// changed here 
 use partitions::*;
+use union_find::*;
 use std::collections::{HashMap, HashSet};
 use std::hash::{BuildHasherDefault, Hash, Hasher};
 use std::str;
@@ -72,11 +74,11 @@ pub type MMHashSet<K> = HashSet<K, MMBuildHasher>;
 #[inline]
 pub fn mm_hashi64(kmer: i64) -> i64 {
     let mut key = kmer as u64;
-    key = !(key.wrapping_add(key << 21)); // key = (key << 21) - key - 1;
+    key = !key.wrapping_add(key << 21);
     key = key ^ key >> 24;
-    key = (key.wrapping_add(key << 3)).wrapping_add(key << 8); // key * 265
+    key = (key.wrapping_add(key << 3)).wrapping_add(key << 8);
     key = key ^ key >> 14;
-    key = (key.wrapping_add(key << 2)).wrapping_add(key << 4); // key * 21
+    key = (key.wrapping_add(key << 2)).wrapping_add(key << 4);
     key = key ^ key >> 28;
     key = key.wrapping_add(key << 31);
     key as i64
@@ -110,7 +112,7 @@ pub fn mm_hash_bytes_32(bytes: &[u8]) -> usize {
 
 #[inline]
 pub fn mm_hash(bytes: &[u8]) -> usize {
-    let mut key = usize::from_ne_bytes(bytes.try_into().unwrap());
+let mut key = u64::from_ne_bytes(bytes.try_into().unwrap()) as usize;
     key = !key.wrapping_add(key << 21); // key = (key << 21) - key - 1;
     key = key ^ key >> 24;
     key = (key.wrapping_add(key << 3)).wrapping_add(key << 8); // key * 265

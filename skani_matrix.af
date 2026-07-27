@@ -1,0 +1,5 @@
+4
+test_files/e.coli-EC590.fasta	100.00	92.46	91.04	87.84
+test_files/e.coli-K12.fasta	91.89	100.00	92.60	88.04
+test_files/e.coli-h5.fasta	86.98	89.02	100.00	85.34
+test_files/e.coli-o157.fasta	73.62	74.25	74.87	100.00

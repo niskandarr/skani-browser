@@ -3,6 +3,7 @@ use crate::regression;
 use crate::file_io;
 use crate::params::*;
 use crate::screen;
+#[cfg(feature = "cli")]
 use crate::sketch_db::{SketchDbReader, is_consolidated_db, has_separate_sketches};
 use crate::types::*;
 use fxhash::FxHashMap;

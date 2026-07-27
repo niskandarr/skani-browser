@@ -6,6 +6,7 @@ use crate::regression;
 
 use fxhash::FxHashMap;
 use log::*;
+// changed 
 use partitions::*;
 use std::mem;
 extern crate interval;
@@ -844,6 +845,7 @@ fn chain_anchors_ani(anchor_chunks: &AnchorChunks, map_params: &MapParams) -> Ve
     for anchor_chunk in anchor_chunks.chunks.iter() {
         let mut pointer_vec = vec![0; anchor_chunk.len()];
         let mut score_vec = vec![0.; anchor_chunk.len()];
+        // CHANGED
         let mut chain_part = partition_vec![];
 
         for i in 0..anchor_chunk.len() {

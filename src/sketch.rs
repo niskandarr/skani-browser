@@ -1,5 +1,6 @@
 use crate::file_io;
 use crate::params::*;
+#[cfg(feature = "cli")]
 use crate::sketch_db::{SketchDbWriter};
 use crate::types::*;
 use log::*;

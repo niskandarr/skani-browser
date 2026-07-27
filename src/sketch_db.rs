@@ -5,6 +5,9 @@ use std::fs::File;
 use std::io::{BufReader, BufWriter, Write};
 use std::path::Path;
 use log::*;
+#[cfg(feature = "cli")]
+use memmap2;
+
 
 /// Index entry for locating sketches in the concatenated database
 #[derive(Serialize, Deserialize, Debug, Clone)]
