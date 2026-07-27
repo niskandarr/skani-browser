@@ -634,7 +634,16 @@
       <div class="results" id="tri-results">
         <hr class="section-divider" style="margin-top:28px;">
         <div style="font-size:16px;font-weight:700;color:#1a2e1a;margin-bottom:12px;">Distance matrix</div>
-
+        <div class="export-row">
+  <button class="export-btn" id="export-tsv">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Export TSV
+  </button>
+  <button class="export-btn" id="export-phylip">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Export Phylip
+  </button>
+</div>
         <div class="matrix-wrap" id="matrix-wrap"></div>
       </div>
     </div>
@@ -890,7 +899,53 @@
         }, 0);
       });
 
+      function exportTSV(names, results) {
+      const n = names.length;
+      const lookup = {};
+      results.forEach(r => { if (!lookup[r.i]) lookup[r.i] = {}; lookup[r.i][r.j] = r; });
+      let tsv = 'Genome_A\tGenome_B\tANI\tAF_query\tAF_ref\n';
+      for (let i = 0; i < n; i++) {
+        for (let j = i+1; j < n; j++) {
+          const r = (lookup[i] || {})[j];
+          if (r) tsv += `${names[i]}\t${names[j]}\t${(r.ani*100).toFixed(4)}\t${(r.af_query*100).toFixed(4)}\t${(r.af_ref*100).toFixed(4)}\n`;
+        }
+      }
+      download('skani_results.tsv', tsv);
+    }
 
+    function exportPhylip(names, results) {
+      const n = names.length;
+      const lookup = {};
+      results.forEach(r => { if (!lookup[r.i]) lookup[r.i] = {}; lookup[r.i][r.j] = r.ani; });
+      let out = `${n}\n`;
+      for (let i = 0; i < n; i++) {
+        const label = names[i].substring(0, 10).padEnd(10);
+        let row = label;
+        for (let j = 0; j < n; j++) {
+          if (i === j) { row += '\t0.000000'; }
+          else {
+            const ani = (lookup[Math.min(i,j)] || {})[Math.max(i,j)] || 0;
+            row += '\t' + (1 - ani).toFixed(6);
+          }
+        }
+        out += row + '\n';
+      }
+      download('skani_results.phy', out);
+    }
+
+    function download(filename, text) {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
+      a.download = filename;
+      a.click();
+    }
+
+    document.getElementById('export-tsv').addEventListener('click', () => {
+      if (lastTriResult) exportTSV(lastTriResult.names, lastTriResult.results);
+    });
+    document.getElementById('export-phylip').addEventListener('click', () => {
+      if (lastTriResult) exportPhylip(lastTriResult.names, lastTriResult.results);
+    });
 
     }).catch(function (err) {
       console.error('WASM load error:', err);
