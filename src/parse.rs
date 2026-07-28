@@ -37,11 +37,12 @@ pub fn parse_params(matches: &ArgMatches) -> (SketchParams, CommandParams) {
     let threads = matches_subc.value_of("t").unwrap();
     let threads = threads.parse::<usize>().unwrap();
 
+    #[cfg(not(target_arch = "wasm32"))]
+{
     rayon::ThreadPoolBuilder::new()
         .num_threads(threads)
         .build_global()
         .unwrap();
-
     simple_logging::log_to_stderr(LevelFilter::Info);
     if matches_subc.is_present("v") {
         simple_logging::log_to_stderr(LevelFilter::Debug);
@@ -49,6 +50,7 @@ pub fn parse_params(matches: &ArgMatches) -> (SketchParams, CommandParams) {
     if matches_subc.is_present("trace") {
         simple_logging::log_to_stderr(LevelFilter::Trace);
     }
+}
 
     if mode == Mode::Search {
         return parse_params_search(matches_subc);
@@ -508,6 +510,7 @@ pub fn parse_params_from_cli(cli: &Cli) -> (SketchParams, CommandParams) {
     }
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 fn setup_logging_and_threads(threads: &str, debug: bool, trace: bool) {
     let threads = threads.parse::<usize>().unwrap();
     rayon::ThreadPoolBuilder::new()
@@ -525,6 +528,7 @@ fn setup_logging_and_threads(threads: &str, debug: bool, trace: bool) {
 }
 
 fn parse_sketch_args(args: &SketchArgs) -> (SketchParams, CommandParams) {
+    #[cfg(not(target_arch = "wasm32"))]
     setup_logging_and_threads(&args.threads, args.debug, args.trace);
 
     let amino_acid = args.aai;
@@ -626,6 +630,7 @@ fn parse_sketch_args(args: &SketchArgs) -> (SketchParams, CommandParams) {
 }
 
 fn parse_dist_args(args: &DistArgs) -> (SketchParams, CommandParams) {
+    #[cfg(not(target_arch = "wasm32"))]
     setup_logging_and_threads(&args.threads, args.debug, args.trace);
 
     let amino_acid = args.aai;
@@ -662,7 +667,7 @@ fn parse_dist_args(args: &DistArgs) -> (SketchParams, CommandParams) {
 
     let max_results = args.n.as_ref()
         .map(|s| s.parse::<usize>().unwrap())
-        .unwrap_or(1000000000000);
+        .unwrap_or(usize::MAX);
 
     let def_k = if amino_acid { DEFAULT_K_AAI } else { DEFAULT_K };
     let def_c = if amino_acid { DEFAULT_C_AAI } else { DEFAULT_C };
@@ -788,6 +793,7 @@ fn parse_dist_args(args: &DistArgs) -> (SketchParams, CommandParams) {
 }
 
 fn parse_triangle_args(args: &TriangleArgs) -> (SketchParams, CommandParams) {
+    #[cfg(not(target_arch = "wasm32"))]
     setup_logging_and_threads(&args.threads, args.debug, args.trace);
 
     let amino_acid = args.aai;
@@ -921,6 +927,8 @@ fn parse_triangle_args(args: &TriangleArgs) -> (SketchParams, CommandParams) {
 }
 
 fn parse_search_args(args: &SearchArgs) -> (SketchParams, CommandParams) {
+    
+    #[cfg(not(target_arch = "wasm32"))]
     setup_logging_and_threads(&args.threads, args.debug, args.trace);
 
     let mut query_files = Vec::new();
@@ -936,7 +944,7 @@ fn parse_search_args(args: &SearchArgs) -> (SketchParams, CommandParams) {
 
     let max_results = args.n.as_ref()
         .map(|s| s.parse::<usize>().unwrap())
-        .unwrap_or(10000000);
+        .unwrap_or(usize::MAX);
 
     let paths = fs::read_dir(&args.database)
         .expect("Issue with folder specified by -d option; exiting");

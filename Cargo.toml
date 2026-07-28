@@ -1,5 +1,6 @@
 [package]
 name = "skani"
+resolver = "2"
 ###Make sure to change version in main.rs after changing cargo.toml
 version = "0.3.2"
 ####
@@ -10,6 +11,9 @@ homepage = "https://github.com/bluenote-1577/skani"
 documentation = "https://github.com/bluenote-1577/skani"
 repository = "https://github.com/bluenote-1577/skani"
 readme = "README.md"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
 
 exclude = [
     "test_files/*",
@@ -23,11 +27,10 @@ thiserror = "1.0"
 bio = "1"
 rand = "0.8.3"
 fxhash = "0"
-partitions = { git = "https://github.com/bluenote-1577/partitions.git" }
+partitions = { git = "https://github.com/bluenote-1577/partitions.git", default-features = false, features = ["compact"] }
 #partitions = "0.2"
 num-traits = "0"
-needletail = "0.5"
-simple-logging= "2"
+needletail = { version = "0.5", default-features = false }
 log = "0.4"
 rayon = "1.5"
 smallvec = { version = "1", features = ["union","serde","write"] }
@@ -41,6 +44,9 @@ gbdt = "0"
 serde_json = "1"
 statrs = "0"
 memmap2 = "0.9"
+wasm-bindgen = "0.2"
+web-sys = { version = "0.3", features = ["console"] }
+wasm-bindgen-rayon = "1.2"
 
 [dependencies.clap]
 version = "3"
@@ -50,12 +56,16 @@ optional = true
 [target.'cfg(target_env = "musl")'.dependencies]
 tikv-jemallocator = "0.5.4"
 
-[dev-dependencies]
+[target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
 assert_cmd = "1.0.1"
 predicates = "1"
 serial_test = "0"
 tsv = "0.1.1"
 reflection = "0"
+
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+simple-logging = "2"
 
 [features]
 default = ["cli"]
@@ -77,3 +87,8 @@ opt-level = 3
 
 #[rust]
 #debuginfo-level = 1
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+getrandom = { version = "0.2", features = ["js"] }
+console_error_panic_hook = "0.1"
+instant = { version = "0.1", features = ["wasm-bindgen"] }

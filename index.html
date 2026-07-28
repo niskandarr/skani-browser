@@ -808,7 +808,7 @@
     }
     
     // ---- init WASM ----
-    init({ module_or_path: './pkg/skani_bg.wasm' }).then(async () => {
+     init({ module_or_path: './pkg/skani_bg.wasm' }).then(async () => {
       // initialise rayon thread pool using all available CPU threads
       await initThreadPool(navigator.hardwareConcurrency); //HERE
 
