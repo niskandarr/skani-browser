@@ -497,8 +497,7 @@
   <div class="card">
     <div class="page-header">
       <h1>Skani Genome Comparator</h1>
-      <p>Compare genomes using <a href=https://github.com/bluenote-1577/skani ></a>skani</p>
-    </div>
+<p>Compare genomes using <a href="https://github.com/bluenote-1577/skani" target="_blank" rel="noopener noreferrer">skani</a></p>    </div>
 
     <!-- Tabs -->
     <div class="tabs">
@@ -947,10 +946,7 @@
     document.getElementById('export-tsv').addEventListener('click', () => {
       if (lastTriResult) exportTSV(lastTriResult.names, lastTriResult.results);
     });
-    document.getElementById('export-phylip').addEventListener('click', () => {
-      if (lastTriResult) exportPhylip(lastTriResult.names, lastTriResult.results);
-    });
-
+ 
     }).catch(function (err) {
       console.error('WASM load error:', err);
       setStatus(document.getElementById('dist-status'), 'Failed: ' + err.message, true);

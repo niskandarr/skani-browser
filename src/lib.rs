@@ -230,7 +230,8 @@ pub fn compare_triangle(
     //   - if j > i, compare and store result (avoids duplicate pairs)
     //   - Mutex protects the shared results Vec 
     let results: Mutex<Vec<serde_json::Value>> = Mutex::new(vec![]);
- 
+    let model_opt = regression::get_model(sketch_params.c, true);
+    
     (0..n - 1)
         .collect::<Vec<usize>>()
         .into_par_iter()
@@ -246,19 +247,20 @@ pub fn compare_triangle(
                 &sketches,
                 true,
             );
- 
+
+            
+
             screened.into_par_iter().for_each(|j| {
                 if j <= i {
                     return; // only upper triangle
                 }
                 let query_sketch = &sketches[j];
-                let model_opt = regression::get_model(sketch_params.c, true);
-let map_params = chain::map_params_from_sketch(
-    ref_sketch,
-    false,
-    &command_params,
-    &model_opt,
-);
+                let map_params = chain::map_params_from_sketch(
+                    ref_sketch,
+                    false,
+                    &command_params,
+                    &model_opt,
+                );
                 let ani_res = chain::chain_seeds(ref_sketch, query_sketch, map_params);
                 if ani_res.ani > 0.0 {
                     let mut locked = results.lock().unwrap();
